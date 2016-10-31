@@ -1,0 +1,333 @@
+import acm.graphics.*;
+import acm.program.*;
+import acm.util.MediaTools;
+import acm.util.RandomGenerator;
+
+import java.applet.AudioClip;
+import java.awt.*;
+import java.awt.event.MouseEvent;
+import java.util.ArrayList;
+import java.awt.color.*;
+import java.util.Timer;
+
+
+public class FinalProject extends GraphicsProgram {
+	public RandomGenerator rgen = new RandomGenerator();
+
+	//Constants.
+
+	private static double SIZE=2;
+	private static double SHAFT_WIDTH= 10;
+	private static double SHAFT_HEIGHT= 2;
+	private static double ARROW_COUNT=0;
+	private static double SET_COUNT=0;
+	private static int BAR_HEIGHT=40;
+	private static int BAR_RECT_WIDTH=80;
+	private static int POINTER_WIDTH=10;
+	private static int POINTER_HEIGHT=40;
+	private static int HOLE_RADIUS=5;
+
+	ArrayList<GLine> arrows=new ArrayList<GLine>();
+
+	public GImage back;
+	public GImage tof;
+	public GImage arrow_T;
+	public GLabel in;
+	public GRect intro;
+	public GLine arrow;
+	public GLabel arrowCount;
+	public GLabel setCount;
+	public GImage hawkeye;
+	public GImage arrow2;
+	public GRect pointer;
+	public GObject obj;
+	public GRect yellow;
+	public GRect red;
+	public GRect blue;
+	int vx=10;
+	private boolean blueClicked=false;
+	private boolean redClicked=false;
+	private boolean yellowClicked=false;
+
+	double x = HOLE_RADIUS;
+	double y = HOLE_RADIUS;
+	double rDoub= rgen.nextInt(getWidth()/2-HOLE_RADIUS*2)/2-10;
+	double rDoub1= rgen.nextInt(getWidth()/2-HOLE_RADIUS*2)/2-10;
+
+	double x1=getWidth()/2-SHAFT_WIDTH*2;
+	double y1=getHeight()/2+SHAFT_WIDTH*2;
+
+
+	public void run() {
+		// your code here...
+		// make sure to use methods!
+
+		setIntro();
+		waitForClick();
+		setIntro2();
+		waitForClick();
+		setIntro3();
+		waitForClick();
+		setIntro4();
+		pause(1700);
+		setBackground(Color.lightGray);
+		setTarget();
+		createBar();
+		pointer.setLocation(getWidth()-BAR_RECT_WIDTH*4, getHeight()-BAR_HEIGHT*1.5);
+		addMouseListeners();
+		setArrowCount();
+
+
+		while(true){
+			pointer.move(vx, 0);
+			pause(50);
+			if(pointer.getX()==getWidth()-BAR_RECT_WIDTH*5){
+				vx=-vx;
+			}
+			if(pointer.getX()==getWidth()-BAR_RECT_WIDTH*1.5){
+				vx=-vx;
+			}
+
+			if(blueClicked){
+
+				GOval hole = new GOval(x, y);
+				hole.setFilled(true);
+				add(hole,rDoub, rDoub1);
+				hole.sendForward();
+
+				pause(500);
+				blueClicked=false;
+			}
+			if(redClicked){
+
+				GOval hole = new GOval(x, y);
+				hole.setFilled(true);
+				add(hole,rDoub, rDoub1);
+				hole.sendForward();
+
+				pause(500);
+				redClicked=false;
+			}
+			if(yellowClicked){
+
+				GOval hole = new GOval(x, y);
+				hole.setFilled(true);
+				add(hole,rDoub, rDoub1);
+				hole.sendForward();
+
+				pause(500);
+				yellowClicked=false;
+			}
+		}
+
+	}
+
+	//Introduction animations.
+
+	public void setIntro(){
+		GRect intro=new GRect(getWidth(), getHeight());
+		intro.setFilled(true);
+		intro.setColor(Color.blue);
+		add(intro);
+
+		drawStars();
+
+		arrow_T=new GImage("");
+		add(arrow_T, getWidth()/2-arrow_T.getWidth()/2 , getHeight()/2-arrow_T.getHeight()/4);
+
+		GLabel in=new GLabel("WORLD ARCHERY CHAMPIONSHIP 2016");
+		in.setFont("Georgia-36");
+		in.setColor(Color.WHITE);
+		add(in,getWidth()/2-in.getWidth()/2 , getHeight()/2-in.getHeight()/2);
+
+		GLabel click=new GLabel("Click to skip.");
+		click.setFont("Georgia-20");
+		click.setColor(Color.WHITE);
+		add(click,getWidth()/2+click.getWidth() , getHeight()/2+click.getHeight()*7);
+
+	}
+
+	public void setIntro2(){
+
+		GRect intro2=new GRect(getWidth(), getHeight());
+		intro2.setFilled(true);
+		intro2.setColor(Color.PINK);
+		add(intro2);
+
+		drawStars();
+
+		//arrow_T=new GImage("arrow_T.png");
+		//add(arrow_T, getWidth()/2-arrow_T.getWidth()/2 , getHeight()/2-arrow_T.getHeight()/4);
+
+		GLabel in=new GLabel("ANTALYA, TURKEY");
+		in.setFont("Georgia-60");
+		in.setColor(Color.WHITE);
+		add(in,getWidth()/2-in.getWidth()/2 , getHeight()/2-in.getHeight()/2);
+
+
+		GLabel click=new GLabel("Click to skip.");
+		click.setFont("Georgia-20");
+		click.setColor(Color.WHITE);
+		add(click,getWidth()/2+click.getWidth() , getHeight()/2+click.getHeight()*7);
+
+
+	}
+
+	public void setIntro3(){
+
+		GRect intro3=new GRect(getWidth(), getHeight());
+		intro3.setFilled(true);
+		intro3.setColor(Color.cyan);
+		add(intro3);
+
+		drawStars();
+
+		GOval prep=new GOval (400, 400);
+		prep.setFilled(true);
+		prep.setColor(Color.white);
+		add(prep, getWidth()/2-200, getHeight()/2-200);
+
+		GLabel prep1=new GLabel("ARE YOU READY TO SHOOT?");
+		prep1.setFont("Georgia-25");
+		prep1.setColor(Color.BLUE);
+		add(prep1,getWidth()/2-prep1.getWidth()/2 , getHeight()/2-prep1.getHeight()/2);
+
+		tof=new GImage("target.png");
+		add(tof, getWidth()/2-tof.getWidth()*1.2, getHeight()-tof.getHeight()/2);
+
+		GLabel click=new GLabel("Click to skip.");
+		click.setFont("Georgia-20");
+		click.setColor(Color.WHITE);
+		add(click,getWidth()/2+click.getWidth()*2 , getHeight()/2+click.getHeight()*7);
+
+	}
+
+
+	public void setIntro4(){
+
+		hawkeye =new GImage ("hawkeye1.gif");
+		hawkeye.setLocation(-250, -250);
+		add(hawkeye);
+	}
+
+	//Setting up the target and statistics.
+
+
+	public void setTarget(){
+
+		back=new GImage("range.jpg");
+		add(back, -240, -720);
+
+		drawCircle(Color.blue, 100);
+		drawCircle(Color.red, 70);
+		drawCircle(Color.yellow, 40 );
+
+
+
+	}
+
+	private void setArrowCount(){
+		arrowCount=new GLabel("Arrows:"+ARROW_COUNT);
+		arrowCount.setFont("Courier-30");
+		arrowCount.setColor(Color.white);
+		arrowCount.setLocation(getWidth()/2+arrowCount.getWidth()*1.3, getHeight()/2+arrowCount.getHeight()*2);
+		add(arrowCount);
+
+	}
+
+	private void drawCircle(Color c, int r){
+		GOval circle=new GOval(r*2,r*2);
+		circle.setFilled(true);
+		circle.setColor(c);
+		int x=(getWidth()/2-r*2)/2;
+		int y=(getHeight()/2-r*2)/2;
+		add(circle, x, y);
+	}
+
+
+	public void drawStars(){
+
+		for(int i=0; i<120; i++){
+			int randomInt= rgen.nextInt(0,getWidth());
+			int randomInt2=rgen.nextInt(0, getHeight());
+			int x=randomInt;
+			int y=randomInt2;
+			GOval star=new GOval(3,3);
+			star.setColor(Color.white);
+			star.setFilled(true);
+			add(star,x, y);
+		}
+	}
+
+	public void drawBack1(){
+
+		GRect back1=new GRect(getWidth(), getHeight());
+		back1.setFilled(true);
+		back1.setColor(Color.GREEN);
+		add(back1);
+	}
+
+	//Creating the bar and the reticle.
+
+	public void createBar(){
+
+		yellow = new GRect(BAR_RECT_WIDTH/2, BAR_HEIGHT);
+		yellow.setFilled(true);
+		yellow.setColor(Color.yellow);
+		add(yellow, getWidth()-BAR_RECT_WIDTH*2, getHeight()-BAR_HEIGHT*1.5);
+
+		red= new GRect(BAR_RECT_WIDTH, BAR_HEIGHT);
+		red.setFilled(true);
+		red.setColor(Color.red);
+		add(red, getWidth()-BAR_RECT_WIDTH*3, getHeight()-BAR_HEIGHT*1.5);
+
+		blue = new GRect(BAR_RECT_WIDTH*2, BAR_HEIGHT);
+		blue.setFilled(true);
+		blue.setColor(Color.blue);
+		add(blue, getWidth()-BAR_RECT_WIDTH*5, getHeight()-BAR_HEIGHT*1.5);
+
+		pointer = new GRect(POINTER_WIDTH, POINTER_HEIGHT);
+		pointer.setFilled(true);
+		pointer.setColor(Color.black);
+		add(pointer);
+
+		GLabel inst=new GLabel("Set the bar and click to shoot!");
+		inst.setFont("Georgia-30");
+		inst.setColor(Color.white);
+		add(inst,getWidth()-BAR_RECT_WIDTH*5, getHeight()-BAR_HEIGHT*2.2 );
+	}
+
+	// Interactions and events.
+
+	public void mouseClicked(MouseEvent e){
+
+		pointer.getX();
+		pointer.setLocation(pointer.getX(),getHeight()-BAR_HEIGHT*1.5);
+
+		if(pointer.getX()>= getWidth()-BAR_RECT_WIDTH*5 && pointer.getX()<=getWidth()-BAR_RECT_WIDTH*3){
+			blueClicked=true;
+
+			ARROW_COUNT=ARROW_COUNT+6;
+			arrowCount.setLabel("Arrow:"+ARROW_COUNT);
+		}
+
+		if(pointer.getX()>= getWidth()-BAR_RECT_WIDTH*3 && pointer.getX()<=getWidth()-BAR_RECT_WIDTH*2){
+			redClicked=true;
+
+			ARROW_COUNT=ARROW_COUNT+8;
+			arrowCount.setLabel("Arrow:"+ARROW_COUNT);
+		}
+
+		if(pointer.getX()>=getWidth()-BAR_RECT_WIDTH*2 && pointer.getX()<=getWidth()-BAR_RECT_WIDTH){
+			yellowClicked=true;
+
+			ARROW_COUNT=ARROW_COUNT+10;
+			arrowCount.setLabel("Arrow:"+ARROW_COUNT);
+		}
+	}
+
+
+
+
+
+}
